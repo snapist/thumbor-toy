@@ -41,7 +41,7 @@ React.render((
         )
     )
 ), document.body);
-},{"./../../config":2,"./actions/ServerActions":184,"./components/Image.jsx":186,"./components/ImageSource.jsx":187,"./components/Loader.jsx":188,"./components/Resize.jsx":189,"./components/ServerSelector.jsx":190,"./components/Url.jsx":191,"./components/filters/Filters.jsx":197,"lodash":5,"react/addons":6}],2:[function(require,module,exports){
+},{"./../../config":2,"./actions/ServerActions":184,"./components/Image.jsx":186,"./components/ImageSource.jsx":187,"./components/Loader.jsx":188,"./components/Resize.jsx":189,"./components/ServerSelector.jsx":190,"./components/Url.jsx":191,"./components/filters/Filters.jsx":200,"lodash":5,"react/addons":6}],2:[function(require,module,exports){
 module.exports = {
     server: [
         { label: 'thumbor demo site', url: 'http://thumbor.thumborize.me/' },
@@ -49,10 +49,13 @@ module.exports = {
 
     filters: [
         'blur',
-        'noise',
-        'watermark',
         'brightness',
-        'grayscale'
+        'contrast',
+        'equalize',
+        'fill',
+        'grayscale',
+        'noise',
+        'watermark'
     ],
 
     images: [
@@ -37010,7 +37013,6 @@ module.exports = [
             return this.type + '(' + this.radius + ')';
         }
     },
-    // Usage: brightness(amount)
     {
         type:      'brightness',
         label:     'Brightness',
@@ -37021,7 +37023,35 @@ module.exports = [
             return this.type + '(' + this.amount + ')';
         }
     },
-    // Usage: noise(amount)
+    {
+        type:      'contrast',
+        label:     'Contrast',
+        active:    false,
+        amount:    1,
+        component: require('./components/filters/ContrastFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.amount + ')';
+        }
+    },
+    {
+        type:      'equalize',
+        label:     'Equalize',
+        active:    false,
+        component: require('./components/filters/EqualizeFilter.jsx'),
+        stringify: function () {
+            return this.type + '()';
+        }
+    },
+    {
+        type:      'fill',
+        label:     'Fill',
+        active:    false,
+        color:     'fff',
+        component: require('./components/filters/FillFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.color + ')';
+        }
+    },
     {
         type:      'noise',
         label:     'Noise',
@@ -37056,7 +37086,7 @@ module.exports = [
         }
     }
 ];
-},{"./../../config":2,"./components/filters/BlurFilter.jsx":192,"./components/filters/BrightnessFilter.jsx":193,"./components/filters/GrayscaleFilter.jsx":198,"./components/filters/NoiseFilter.jsx":199,"./components/filters/WatermarkFilter.jsx":200}],186:[function(require,module,exports){
+},{"./../../config":2,"./components/filters/BlurFilter.jsx":192,"./components/filters/BrightnessFilter.jsx":193,"./components/filters/ContrastFilter.jsx":194,"./components/filters/EqualizeFilter.jsx":195,"./components/filters/FillFilter.jsx":196,"./components/filters/GrayscaleFilter.jsx":201,"./components/filters/NoiseFilter.jsx":202,"./components/filters/WatermarkFilter.jsx":203}],186:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var config        = require('./../../../config');
@@ -37114,7 +37144,7 @@ var ImageComponent = React.createClass({displayName: 'ImageComponent',
 
 module.exports = ImageComponent;
 
-},{"./../../../config":2,"./../actions/LoaderActions":182,"./../stores/ImageStore":202,"./../stores/UrlStore":206,"jquery":4,"react/addons":6,"reflux":175}],187:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/LoaderActions":182,"./../stores/ImageStore":205,"./../stores/UrlStore":209,"jquery":4,"react/addons":6,"reflux":175}],187:[function(require,module,exports){
 /**
  * This component is responsible for image source selection.
  */
@@ -37233,7 +37263,7 @@ var Loader = React.createClass({displayName: 'Loader',
 
 module.exports = Loader;
 
-},{"./../stores/LoaderStore":203,"react/addons":6,"reflux":175}],189:[function(require,module,exports){
+},{"./../stores/LoaderStore":206,"react/addons":6,"reflux":175}],189:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var ResizeActions = require('./../actions/ResizeActions');
@@ -37385,7 +37415,7 @@ var Url = React.createClass({displayName: 'Url',
 
 module.exports = Url;
 
-},{"./../stores/UrlStore":206,"react/addons":6,"reflux":175}],192:[function(require,module,exports){
+},{"./../stores/UrlStore":209,"react/addons":6,"reflux":175}],192:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37411,7 +37441,7 @@ var BlurFilter = React.createClass({displayName: 'BlurFilter',
 
 module.exports = BlurFilter;
 
-},{"./FilterMixin":194,"react/addons":6}],193:[function(require,module,exports){
+},{"./FilterMixin":197,"react/addons":6}],193:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37437,7 +37467,73 @@ var BrightnessFilter = React.createClass({displayName: 'BrightnessFilter',
 
 module.exports = BrightnessFilter;
 
-},{"./FilterMixin":194,"react/addons":6}],194:[function(require,module,exports){
+},{"./FilterMixin":197,"react/addons":6}],194:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var ContrastFilter = React.createClass({displayName: 'ContrastFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("label", {className: "control-group__label"}, "amount"), 
+            React.createElement("input", {className: "control-group__control", 
+                   ref: "amount", type: "text", 
+                   onChange: this._onChange, 
+                   defaultValue: this.props.filter.amount})
+        )
+    },
+
+    getSettings: function () {
+        return {
+            amount: parseInt(this.refs.amount.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = ContrastFilter;
+
+},{"./FilterMixin":197,"react/addons":6}],195:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var EqualizeFilter = React.createClass({displayName: 'EqualizeFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return '';
+    }
+});
+
+module.exports = EqualizeFilter;
+
+},{"./FilterMixin":197,"react/addons":6}],196:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var FillFilter = React.createClass({displayName: 'FillFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("label", {className: "control-group__label"}, "color"), 
+            React.createElement("input", {className: "control-group__control", 
+                   ref: "color", type: "text", 
+                   onChange: this._onChange, 
+                   defaultValue: this.props.filter.color})
+        )
+    },
+
+    getSettings: function () {
+        return {
+            color: this.refs.color.getDOMNode().value
+        };
+    }
+});
+
+module.exports = FillFilter;
+
+},{"./FilterMixin":197,"react/addons":6}],197:[function(require,module,exports){
 var React         = require('react/addons');
 var FilterActions = require('./../../actions/FilterActions');
 var FilterToggle  = require('./FilterToggle.jsx');
@@ -37488,7 +37584,7 @@ var FilterMixin = {
 };
 
 module.exports = FilterMixin;
-},{"./../../actions/FilterActions":180,"./FilterToggle.jsx":196,"react/addons":6}],195:[function(require,module,exports){
+},{"./../../actions/FilterActions":180,"./FilterToggle.jsx":199,"react/addons":6}],198:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var config        = require('./../../../../config');
@@ -37526,7 +37622,7 @@ var FilterSelector = React.createClass({displayName: 'FilterSelector',
 
 module.exports = FilterSelector;
 
-},{"./../../../../config":2,"./../../actions/FilterActions":180,"./../../stores/FiltersStore":201,"react/addons":6,"reflux":175}],196:[function(require,module,exports){
+},{"./../../../../config":2,"./../../actions/FilterActions":180,"./../../stores/FiltersStore":204,"react/addons":6,"reflux":175}],199:[function(require,module,exports){
 var React         = require('react/addons');
 var FilterActions = require('./../../actions/FilterActions');
 
@@ -37575,7 +37671,7 @@ var FilterToggle = React.createClass({displayName: 'FilterToggle',
 
 module.exports = FilterToggle;
 
-},{"./../../actions/FilterActions":180,"react/addons":6}],197:[function(require,module,exports){
+},{"./../../actions/FilterActions":180,"react/addons":6}],200:[function(require,module,exports){
 var React          = require('react/addons');
 var Reflux         = require('reflux');
 var config         = require('./../../../../config');
@@ -37628,7 +37724,7 @@ var Filters = React.createClass({displayName: 'Filters',
 
 module.exports = Filters;
 
-},{"./../../../../config":2,"./../../stores/FiltersStore":201,"./../../stores/ImageStore":202,"./FilterSelector.jsx":195,"react/addons":6,"reflux":175}],198:[function(require,module,exports){
+},{"./../../../../config":2,"./../../stores/FiltersStore":204,"./../../stores/ImageStore":205,"./FilterSelector.jsx":198,"react/addons":6,"reflux":175}],201:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37642,7 +37738,7 @@ var GrayscaleFilter = React.createClass({displayName: 'GrayscaleFilter',
 
 module.exports = GrayscaleFilter;
 
-},{"./FilterMixin":194,"react/addons":6}],199:[function(require,module,exports){
+},{"./FilterMixin":197,"react/addons":6}],202:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37668,7 +37764,7 @@ var NoiseFilter = React.createClass({displayName: 'NoiseFilter',
 
 module.exports = NoiseFilter;
 
-},{"./FilterMixin":194,"react/addons":6}],200:[function(require,module,exports){
+},{"./FilterMixin":197,"react/addons":6}],203:[function(require,module,exports){
 var React       = require('react/addons');
 var config      = require('./../../../../config');
 var FilterMixin = require('./FilterMixin');
@@ -37721,7 +37817,7 @@ var WatermarkFilter = React.createClass({displayName: 'WatermarkFilter',
 
 module.exports = WatermarkFilter;
 
-},{"./../../../../config":2,"./FilterMixin":194,"react/addons":6}],201:[function(require,module,exports){
+},{"./../../../../config":2,"./FilterMixin":197,"react/addons":6}],204:[function(require,module,exports){
 var Reflux        = require('reflux');
 var FilterActions = require('./../actions/FilterActions');
 var config        = require('./../../../config');
@@ -37791,7 +37887,7 @@ var FiltersStore = Reflux.createStore({
 });
 
 module.exports = FiltersStore;
-},{"./../../../config":2,"./../actions/FilterActions":180,"./../baseFilters":185,"lodash":5,"reflux":175}],202:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/FilterActions":180,"./../baseFilters":185,"lodash":5,"reflux":175}],205:[function(require,module,exports){
 var Reflux       = require('reflux');
 var ImageActions = require('./../actions/ImageActions');
 var config       = require('./../../../config');
@@ -37816,7 +37912,7 @@ var ImageStore = Reflux.createStore({
 });
 
 module.exports = ImageStore;
-},{"./../../../config":2,"./../actions/ImageActions":181,"jquery":4,"reflux":175}],203:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/ImageActions":181,"jquery":4,"reflux":175}],206:[function(require,module,exports){
 var Reflux        = require('reflux');
 var LoaderActions = require('./../actions/LoaderActions');
 
@@ -37842,7 +37938,7 @@ var ImageStore = Reflux.createStore({
 });
 
 module.exports = ImageStore;
-},{"./../actions/LoaderActions":182,"reflux":175}],204:[function(require,module,exports){
+},{"./../actions/LoaderActions":182,"reflux":175}],207:[function(require,module,exports){
 var Reflux        = require('reflux');
 var ResizeActions = require('./../actions/ResizeActions');
 var _             = require('lodash');
@@ -37873,7 +37969,7 @@ var ResizeStore = Reflux.createStore({
 });
 
 module.exports = ResizeStore;
-},{"./../actions/ResizeActions":183,"lodash":5,"reflux":175}],205:[function(require,module,exports){
+},{"./../actions/ResizeActions":183,"lodash":5,"reflux":175}],208:[function(require,module,exports){
 var Reflux        = require('reflux');
 var _             = require('lodash');
 var config        = require('./../../../config');
@@ -37898,7 +37994,7 @@ var ServerStore = Reflux.createStore({
 });
 
 module.exports = ServerStore;
-},{"./../../../config":2,"./../actions/ServerActions":184,"lodash":5,"reflux":175}],206:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/ServerActions":184,"lodash":5,"reflux":175}],209:[function(require,module,exports){
 var Reflux       = require('reflux');
 var _            = require('lodash');
 var config       = require('./../../../config');
@@ -37949,4 +38045,4 @@ var UrlStore = Reflux.createStore({
 });
 
 module.exports = UrlStore;
-},{"./../../../config":2,"./FiltersStore":201,"./ImageStore":202,"./ResizeStore":204,"./ServerStore":205,"lodash":5,"reflux":175}]},{},[1]);
+},{"./../../../config":2,"./FiltersStore":204,"./ImageStore":205,"./ResizeStore":207,"./ServerStore":208,"lodash":5,"reflux":175}]},{},[1]);
