@@ -56,12 +56,11 @@ module.exports = {
     ],
 
     images: [
-        { label: 'sample image', src: 'thumborize.me/static/img/beach.jpg' },
-        { label: 'thumbor logo', src: 'camo.githubusercontent.com/0e70e67eb66dbda26bfe32dbd8c7ff3e5b6a5fdb/68747470733a2f2f7261772e6769746875622e636f6d2f7468756d626f722f7468756d626f722f6d61737465722f6c6f676f2d7468756d626f722e706e67' }
+        { label: 'sample image', src: 'thumborize.me/static/img/beach.jpg' }
     ],
 
     watermarkImages: [
-        { label: 'thumbor logo', src: 'camo.githubusercontent.com/0e70e67eb66dbda26bfe32dbd8c7ff3e5b6a5fdb/68747470733a2f2f7261772e6769746875622e636f6d2f7468756d626f722f7468756d626f722f6d61737465722f6c6f676f2d7468756d626f722e706e67' }
+        { label: 'sample image', src: 'thumborize.me/static/img/beach.jpg' }
     ]
 };
 },{}],3:[function(require,module,exports){
