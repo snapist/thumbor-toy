@@ -41,7 +41,7 @@ React.render((
         )
     )
 ), document.body);
-},{"./../../config":2,"./actions/ServerActions":184,"./components/Image.jsx":186,"./components/ImageSource.jsx":187,"./components/Loader.jsx":188,"./components/Resize.jsx":189,"./components/ServerSelector.jsx":190,"./components/Url.jsx":191,"./components/filters/Filters.jsx":200,"lodash":5,"react/addons":6}],2:[function(require,module,exports){
+},{"./../../config":2,"./actions/ServerActions":184,"./components/Image.jsx":186,"./components/ImageSource.jsx":187,"./components/Loader.jsx":188,"./components/Resize.jsx":189,"./components/ServerSelector.jsx":190,"./components/Url.jsx":191,"./components/filters/Filters.jsx":203,"lodash":5,"react/addons":6}],2:[function(require,module,exports){
 module.exports = {
     server: [
         { label: 'thumbor demo site', url: 'http://thumbor.thumborize.me/' },
@@ -50,12 +50,24 @@ module.exports = {
     filters: [
         'blur',
         'brightness',
+        'colorize',
         'contrast',
+        'convolution',
         'equalize',
+        'extract_focal',
         'fill',
+        'format',
         'grayscale',
+        'max_bytes',
         'noise',
         'no_upscale',
+        'quality',
+        'rgb',
+        'rotate',
+        'round_corner',
+        'saturation',
+        'sharpen',
+        'strip_icc',
         'watermark'
     ],
 
@@ -37047,7 +37059,7 @@ module.exports = [
         type:      'fill',
         label:     'Fill',
         active:    false,
-        color:     'fff',
+        color:     'auto',
         component: require('./components/filters/FillFilter.jsx'),
         stringify: function () {
             return this.type + '(' + this.color + ')';
@@ -37092,11 +37104,141 @@ module.exports = [
         transparency: 0,
         component:    require('./components/filters/WatermarkFilter.jsx'),
         stringify:    function () {
-            return this.type + '(' + this.image + ',' + this.x + ',' + this.y + ',' + this.transparency +')';
+            return this.type + '(' + this.image + ',' + this.x + ',' + this.y + ',' + this.transparency + ')';
         }
-    }
+    },
+    {
+        type:      'strip_icc',
+        label:     'Strip ICC',
+        active:    false,
+        component: require('./components/filters/StripIccFilter.jsx'),
+        stringify: function () {
+            return this.type + '()';
+        }
+    },
+    {
+        type:      'quality',
+        label:     'Quality',
+        amount:    100,
+        active:    false,
+        component: require('./components/filters/QualityFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.amount + ')';
+        }
+    },
+    {
+        type:      'colorize',
+        label:     'Colorize',
+        red:       100,
+        green:     100,
+        blue:      100,
+        color:     'ff0000',
+        active:    false,
+        component: require('./components/filters/ColorizeFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + [this.red, this.green, this.blue, this.color].join(',') + ')';
+        }
+    },
+    {
+        type:          'sharpen',
+        label:         'Sharpen',
+        amount:        3,
+        radius:        1.0,
+        luminanceOnly: true,
+        active:        false,
+        component:     require('./components/filters/SharpenFilter.jsx'),
+        stringify:     function () {
+            return this.type + '(' + this.amount + ',' + this.radius + ',' + this.luminanceOnly + ')';
+        }
+    },
+    {
+        type:      'saturation',
+        label:     'Saturation',
+        amount:    1.0,
+        active:    false,
+        component: require('./components/filters/SaturationFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.amount + ')';
+        }
+    },
+    {
+        type:      'rgb',
+        label:     'RGB',
+        red:       0,
+        green:     0,
+        blue:      0,
+        active:    false,
+        component: require('./components/filters/RgbFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + [this.red, this.green, this.blue].join(',') + ')';
+        }
+    },
+    {
+        type:      'round_corner',
+        label:     'Round corner',
+        radius:    10,
+        red:       100,
+        green:     100,
+        blue:      100,
+        active:    false,
+        component: require('./components/filters/RoundCornerFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + [this.radius, this.red, this.green, this.blue].join(',') + ')';
+        }
+    },
+    {
+        type:      'format',
+        label:     'Format',
+        format:    'gif',
+        active:    false,
+        component: require('./components/filters/FormatFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.format + ')';
+        }
+    },
+    {
+        type:      'rotate',
+        label:     'Rotate',
+        angle:     90,
+        active:    false,
+        component: require('./components/filters/RotateFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.angle + ')';
+        }
+    },
+    {
+        type:      'extract_focal',
+        label:     'Extract focal',
+        active:    false,
+        component: require('./components/filters/ExtractFocalFilter.jsx'),
+        stringify: function () {
+            return this.type + '()';
+        }
+    },
+    {
+        type:      'convolution',
+        label:     'Convolution',
+        matrix:    '-1;-1;-1;-1;8;-1;-1;-1;-1',
+        columns:   3,
+        normalize: false,
+        active:    false,
+        component: require('./components/filters/ConvolutionFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + [this.matrix, this.columns, this.normalize].join(',') + ')';
+        }
+    },
+    {
+        type:      'max_bytes',
+        label:     'Max bytes',
+        bytes:     1000,
+        active:    false,
+        component: require('./components/filters/MaxBytesFilter.jsx'),
+        stringify: function () {
+            return this.type + '(' + this.bytes + ')';
+        }
+    },
 ];
-},{"./../../config":2,"./components/filters/BlurFilter.jsx":192,"./components/filters/BrightnessFilter.jsx":193,"./components/filters/ContrastFilter.jsx":194,"./components/filters/EqualizeFilter.jsx":195,"./components/filters/FillFilter.jsx":196,"./components/filters/GrayscaleFilter.jsx":201,"./components/filters/NoUpscaleFilter.jsx":202,"./components/filters/NoiseFilter.jsx":203,"./components/filters/WatermarkFilter.jsx":204}],186:[function(require,module,exports){
+},{"./../../config":2,"./components/filters/BlurFilter.jsx":192,"./components/filters/BrightnessFilter.jsx":193,"./components/filters/ColorizeFilter.jsx":194,"./components/filters/ContrastFilter.jsx":195,"./components/filters/ConvolutionFilter.jsx":196,"./components/filters/EqualizeFilter.jsx":197,"./components/filters/ExtractFocalFilter.jsx":198,"./components/filters/FillFilter.jsx":199,"./components/filters/FormatFilter.jsx":204,"./components/filters/GrayscaleFilter.jsx":205,"./components/filters/MaxBytesFilter.jsx":206,"./components/filters/NoUpscaleFilter.jsx":207,"./components/filters/NoiseFilter.jsx":208,"./components/filters/QualityFilter.jsx":209,"./components/filters/RgbFilter.jsx":210,"./components/filters/RotateFilter.jsx":211,"./components/filters/RoundCornerFilter.jsx":212,"./components/filters/SaturationFilter.jsx":213,"./components/filters/SharpenFilter.jsx":214,"./components/filters/StripIccFilter.jsx":215,"./components/filters/WatermarkFilter.jsx":216}],186:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var config        = require('./../../../config');
@@ -37154,7 +37296,7 @@ var ImageComponent = React.createClass({displayName: 'ImageComponent',
 
 module.exports = ImageComponent;
 
-},{"./../../../config":2,"./../actions/LoaderActions":182,"./../stores/ImageStore":206,"./../stores/UrlStore":210,"jquery":4,"react/addons":6,"reflux":175}],187:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/LoaderActions":182,"./../stores/ImageStore":218,"./../stores/UrlStore":222,"jquery":4,"react/addons":6,"reflux":175}],187:[function(require,module,exports){
 /**
  * This component is responsible for image source selection.
  */
@@ -37273,7 +37415,7 @@ var Loader = React.createClass({displayName: 'Loader',
 
 module.exports = Loader;
 
-},{"./../stores/LoaderStore":207,"react/addons":6,"reflux":175}],189:[function(require,module,exports){
+},{"./../stores/LoaderStore":219,"react/addons":6,"reflux":175}],189:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var ResizeActions = require('./../actions/ResizeActions');
@@ -37425,7 +37567,7 @@ var Url = React.createClass({displayName: 'Url',
 
 module.exports = Url;
 
-},{"./../stores/UrlStore":210,"react/addons":6,"reflux":175}],192:[function(require,module,exports){
+},{"./../stores/UrlStore":222,"react/addons":6,"reflux":175}],192:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37451,7 +37593,7 @@ var BlurFilter = React.createClass({displayName: 'BlurFilter',
 
 module.exports = BlurFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],193:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],193:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37477,7 +37619,59 @@ var BrightnessFilter = React.createClass({displayName: 'BrightnessFilter',
 
 module.exports = BrightnessFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],194:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],194:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var ColorizeFilter = React.createClass({displayName: 'ColorizeFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "red"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "red", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.red})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "green"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "green", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.green})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "blue"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "blue", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.blue})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "color"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "color", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.color})
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            red:   parseInt(this.refs.red.getDOMNode().value, 10),
+            green: parseInt(this.refs.green.getDOMNode().value, 10),
+            blue:  parseInt(this.refs.blue.getDOMNode().value, 10),
+            color: this.refs.color.getDOMNode().value
+        };
+    }
+});
+
+module.exports = ColorizeFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],195:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37503,7 +37697,50 @@ var ContrastFilter = React.createClass({displayName: 'ContrastFilter',
 
 module.exports = ContrastFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],195:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],196:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var ConvolutionFilter = React.createClass({displayName: 'ConvolutionFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "matrix"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "matrix", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.matrix})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "columns"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "columns", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.columns})
+            ), 
+            React.createElement("label", null, 
+                React.createElement("input", {ref: "normalize", type: "checkbox", 
+                       onChange: this._onChange, 
+                       defaultChecked: this.props.filter.normalize}), 
+                "normalize"
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            matrix:    this.refs.matrix.getDOMNode().value,
+            columns:   parseInt(this.refs.columns.getDOMNode().value, 10),
+            normalize: this.refs.normalize.getDOMNode().checked
+        };
+    }
+});
+
+module.exports = ConvolutionFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],197:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37517,7 +37754,21 @@ var EqualizeFilter = React.createClass({displayName: 'EqualizeFilter',
 
 module.exports = EqualizeFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],196:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],198:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var ExtractFocalFilter = React.createClass({displayName: 'ExtractFocalFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return '';
+    }
+});
+
+module.exports = ExtractFocalFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],199:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37543,7 +37794,7 @@ var FillFilter = React.createClass({displayName: 'FillFilter',
 
 module.exports = FillFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],197:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],200:[function(require,module,exports){
 var React         = require('react/addons');
 var FilterActions = require('./../../actions/FilterActions');
 var FilterToggle  = require('./FilterToggle.jsx');
@@ -37594,7 +37845,7 @@ var FilterMixin = {
 };
 
 module.exports = FilterMixin;
-},{"./../../actions/FilterActions":180,"./FilterToggle.jsx":199,"react/addons":6}],198:[function(require,module,exports){
+},{"./../../actions/FilterActions":180,"./FilterToggle.jsx":202,"react/addons":6}],201:[function(require,module,exports){
 var React         = require('react/addons');
 var Reflux        = require('reflux');
 var config        = require('./../../../../config');
@@ -37632,7 +37883,7 @@ var FilterSelector = React.createClass({displayName: 'FilterSelector',
 
 module.exports = FilterSelector;
 
-},{"./../../../../config":2,"./../../actions/FilterActions":180,"./../../stores/FiltersStore":205,"react/addons":6,"reflux":175}],199:[function(require,module,exports){
+},{"./../../../../config":2,"./../../actions/FilterActions":180,"./../../stores/FiltersStore":217,"react/addons":6,"reflux":175}],202:[function(require,module,exports){
 var React         = require('react/addons');
 var FilterActions = require('./../../actions/FilterActions');
 
@@ -37681,7 +37932,7 @@ var FilterToggle = React.createClass({displayName: 'FilterToggle',
 
 module.exports = FilterToggle;
 
-},{"./../../actions/FilterActions":180,"react/addons":6}],200:[function(require,module,exports){
+},{"./../../actions/FilterActions":180,"react/addons":6}],203:[function(require,module,exports){
 var React          = require('react/addons');
 var Reflux         = require('reflux');
 var config         = require('./../../../../config');
@@ -37734,7 +37985,40 @@ var Filters = React.createClass({displayName: 'Filters',
 
 module.exports = Filters;
 
-},{"./../../../../config":2,"./../../stores/FiltersStore":205,"./../../stores/ImageStore":206,"./FilterSelector.jsx":198,"react/addons":6,"reflux":175}],201:[function(require,module,exports){
+},{"./../../../../config":2,"./../../stores/FiltersStore":217,"./../../stores/ImageStore":218,"./FilterSelector.jsx":201,"react/addons":6,"reflux":175}],204:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var FormatFilter = React.createClass({displayName: 'FormatFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", null, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("div", {className: "select-box"}, 
+                    React.createElement("select", {ref: "format", onChange: this._onChange, 
+                            defaultValue: this.props.filter.format}, 
+                        React.createElement("option", {value: "jpeg"}, "jpeg"), 
+                        React.createElement("option", {value: "gif"}, "gif"), 
+                        React.createElement("option", {value: "png"}, "png"), 
+                        React.createElement("option", {value: "webp"}, "webp")
+                    ), 
+                    React.createElement("i", {className: "fa fa-angle-down"})
+                )
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            format: this.refs.format.getDOMNode().value
+        };
+    }
+});
+
+module.exports = FormatFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],205:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37748,7 +38032,33 @@ var GrayscaleFilter = React.createClass({displayName: 'GrayscaleFilter',
 
 module.exports = GrayscaleFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],202:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],206:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var MaxBytesFilter = React.createClass({displayName: 'MaxBytesFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("label", {className: "control-group__label"}, "bytes"), 
+            React.createElement("input", {className: "control-group__control", 
+                   ref: "bytes", type: "text", 
+                   onChange: this._onChange, 
+                   defaultValue: this.props.filter.bytes})
+        )
+    },
+
+    getSettings: function () {
+        return {
+            bytes: parseInt(this.refs.bytes.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = MaxBytesFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],207:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37762,7 +38072,7 @@ var NoUpscaleFilter = React.createClass({displayName: 'NoUpscaleFilter',
 
 module.exports = NoUpscaleFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],203:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],208:[function(require,module,exports){
 var React       = require('react/addons');
 var FilterMixin = require('./FilterMixin');
 
@@ -37788,7 +38098,247 @@ var NoiseFilter = React.createClass({displayName: 'NoiseFilter',
 
 module.exports = NoiseFilter;
 
-},{"./FilterMixin":197,"react/addons":6}],204:[function(require,module,exports){
+},{"./FilterMixin":200,"react/addons":6}],209:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var QualityFilter = React.createClass({displayName: 'QualityFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("label", {className: "control-group__label"}, "amount"), 
+            React.createElement("input", {className: "control-group__control", 
+                   ref: "amount", type: "text", 
+                   onChange: this._onChange, 
+                   defaultValue: this.props.filter.amount})
+        )
+    },
+
+    getSettings: function () {
+        return {
+            amount: parseInt(this.refs.amount.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = QualityFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],210:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var RgbFilter = React.createClass({displayName: 'RgbFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "red"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "red", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.red})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "green"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "green", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.green})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "blue"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "blue", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.blue})
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            red:   parseInt(this.refs.red.getDOMNode().value, 10),
+            green: parseInt(this.refs.green.getDOMNode().value, 10),
+            blue:  parseInt(this.refs.blue.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = RgbFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],211:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var RotateFilter = React.createClass({displayName: 'RotateFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", null, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("div", {className: "select-box"}, 
+                    React.createElement("select", {ref: "angle", onChange: this._onChange, 
+                            defaultValue: this.props.filter.angle}, 
+                        React.createElement("option", {value: "0"}, "0"), 
+                        React.createElement("option", {value: "90"}, "90"), 
+                        React.createElement("option", {value: "180"}, "180"), 
+                        React.createElement("option", {value: "270"}, "270")
+                    ), 
+                    React.createElement("i", {className: "fa fa-angle-down"})
+                )
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            angle: parseInt(this.refs.angle.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = RotateFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],212:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var RoundCornerFilter = React.createClass({displayName: 'RoundCornerFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "radius"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "radius", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.radius})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "red"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "red", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.red})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "green"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "green", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.green})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "blue"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "blue", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.blue})
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            radius: this.refs.radius.getDOMNode().value,
+            red:    parseInt(this.refs.red.getDOMNode().value, 10),
+            green:  parseInt(this.refs.green.getDOMNode().value, 10),
+            blue:   parseInt(this.refs.blue.getDOMNode().value, 10)
+        };
+    }
+});
+
+module.exports = RoundCornerFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],213:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var SaturationFilter = React.createClass({displayName: 'SaturationFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("label", {className: "control-group__label"}, "amount"), 
+            React.createElement("input", {className: "control-group__control", 
+                   ref: "amount", type: "text", 
+                   onChange: this._onChange, 
+                   defaultValue: this.props.filter.amount})
+        )
+    },
+
+    getSettings: function () {
+        return {
+            amount: this.refs.amount.getDOMNode().value
+        };
+    }
+});
+
+module.exports = SaturationFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],214:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var SharpenFilter = React.createClass({displayName: 'SharpenFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return React.createElement("div", {className: "control-group"}, 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "amount"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "amount", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.amount})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", {className: "control-group__label"}, "radius"), 
+                React.createElement("input", {className: "control-group__control", 
+                       ref: "radius", type: "text", 
+                       onChange: this._onChange, 
+                       defaultValue: this.props.filter.radius})
+            ), 
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("label", null, 
+                    React.createElement("input", {ref: "luminance", type: "checkbox", 
+                           onChange: this._onChange, 
+                           defaultChecked: this.props.filter.luminanceOnly}), 
+                    "luminance only"
+                )
+            )
+        )
+    },
+
+    getSettings: function () {
+        return {
+            amount:        this.refs.amount.getDOMNode().value,
+            radius:        this.refs.radius.getDOMNode().value,
+            luminanceOnly: this.refs.luminance.getDOMNode().checked
+        };
+    }
+});
+
+module.exports = SharpenFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],215:[function(require,module,exports){
+var React       = require('react/addons');
+var FilterMixin = require('./FilterMixin');
+
+var StripIccFilter = React.createClass({displayName: 'StripIccFilter',
+    mixins: [FilterMixin],
+
+    getSettingsNodes: function () {
+        return '';
+    }
+});
+
+module.exports = StripIccFilter;
+
+},{"./FilterMixin":200,"react/addons":6}],216:[function(require,module,exports){
 var React       = require('react/addons');
 var config      = require('./../../../../config');
 var FilterMixin = require('./FilterMixin');
@@ -37802,8 +38352,13 @@ var WatermarkFilter = React.createClass({displayName: 'WatermarkFilter',
         });
 
         return React.createElement("div", null, 
-            React.createElement("select", {ref: "image", onChange: this._onChange}, 
-                options
+            React.createElement("div", {className: "control-group"}, 
+                React.createElement("div", {className: "select-box"}, 
+                    React.createElement("select", {ref: "image", onChange: this._onChange}, 
+                        options
+                    ), 
+                    React.createElement("i", {className: "fa fa-angle-down"})
+                )
             ), 
             React.createElement("div", {className: "control-group"}, 
                 React.createElement("label", {className: "control-group__label"}, "left"), 
@@ -37841,7 +38396,7 @@ var WatermarkFilter = React.createClass({displayName: 'WatermarkFilter',
 
 module.exports = WatermarkFilter;
 
-},{"./../../../../config":2,"./FilterMixin":197,"react/addons":6}],205:[function(require,module,exports){
+},{"./../../../../config":2,"./FilterMixin":200,"react/addons":6}],217:[function(require,module,exports){
 var Reflux        = require('reflux');
 var FilterActions = require('./../actions/FilterActions');
 var config        = require('./../../../config');
@@ -37911,7 +38466,7 @@ var FiltersStore = Reflux.createStore({
 });
 
 module.exports = FiltersStore;
-},{"./../../../config":2,"./../actions/FilterActions":180,"./../baseFilters":185,"lodash":5,"reflux":175}],206:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/FilterActions":180,"./../baseFilters":185,"lodash":5,"reflux":175}],218:[function(require,module,exports){
 var Reflux       = require('reflux');
 var ImageActions = require('./../actions/ImageActions');
 var config       = require('./../../../config');
@@ -37936,7 +38491,7 @@ var ImageStore = Reflux.createStore({
 });
 
 module.exports = ImageStore;
-},{"./../../../config":2,"./../actions/ImageActions":181,"jquery":4,"reflux":175}],207:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/ImageActions":181,"jquery":4,"reflux":175}],219:[function(require,module,exports){
 var Reflux        = require('reflux');
 var LoaderActions = require('./../actions/LoaderActions');
 
@@ -37962,7 +38517,7 @@ var ImageStore = Reflux.createStore({
 });
 
 module.exports = ImageStore;
-},{"./../actions/LoaderActions":182,"reflux":175}],208:[function(require,module,exports){
+},{"./../actions/LoaderActions":182,"reflux":175}],220:[function(require,module,exports){
 var Reflux        = require('reflux');
 var ResizeActions = require('./../actions/ResizeActions');
 var _             = require('lodash');
@@ -37993,7 +38548,7 @@ var ResizeStore = Reflux.createStore({
 });
 
 module.exports = ResizeStore;
-},{"./../actions/ResizeActions":183,"lodash":5,"reflux":175}],209:[function(require,module,exports){
+},{"./../actions/ResizeActions":183,"lodash":5,"reflux":175}],221:[function(require,module,exports){
 var Reflux        = require('reflux');
 var _             = require('lodash');
 var config        = require('./../../../config');
@@ -38018,7 +38573,7 @@ var ServerStore = Reflux.createStore({
 });
 
 module.exports = ServerStore;
-},{"./../../../config":2,"./../actions/ServerActions":184,"lodash":5,"reflux":175}],210:[function(require,module,exports){
+},{"./../../../config":2,"./../actions/ServerActions":184,"lodash":5,"reflux":175}],222:[function(require,module,exports){
 var Reflux       = require('reflux');
 var _            = require('lodash');
 var config       = require('./../../../config');
@@ -38069,4 +38624,4 @@ var UrlStore = Reflux.createStore({
 });
 
 module.exports = UrlStore;
-},{"./../../../config":2,"./FiltersStore":205,"./ImageStore":206,"./ResizeStore":208,"./ServerStore":209,"lodash":5,"reflux":175}]},{},[1]);
+},{"./../../../config":2,"./FiltersStore":217,"./ImageStore":218,"./ResizeStore":220,"./ServerStore":221,"lodash":5,"reflux":175}]},{},[1]);
